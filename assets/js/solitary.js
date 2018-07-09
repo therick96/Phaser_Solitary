@@ -1,5 +1,3 @@
-console.log("Hola");
-
 var Solitario = {
     preload: function () {
         // body...
