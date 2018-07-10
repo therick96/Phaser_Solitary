@@ -21,7 +21,7 @@ var Solitario = {
         // body...
 
         Game.load.spritesheet('atras', 'assets/imgs/cartas_1.png', 370 / 3, 200, 3);
-        Game.load.spritesheet('cartas', 'assets/imgs/cartas_2.png', 202, 504);
+        Game.load.spritesheet('cartas', 'assets/imgs/cartas_2.png', 126, 202, 48);
 
         Game.load.json('cartas_json', 'assets/js/cartas_json.json');
 
@@ -51,7 +51,8 @@ var Solitario = {
         for (var i = 0; i < CONTADOR.length; i++){
             for ( var j = 0; j < CONTADOR[i]; j++){
                 var index = Math.floor( Math.random() * this.cartas.length );
-                this.filas[i].push(this.cartas.splice( index, 1 ));
+                this.filas[i].push(this.cartas[index]);
+                this.cartas.splice( index, 1 );
             }
         }
 
@@ -60,20 +61,19 @@ var Solitario = {
 
         for (var i = 0; i < sobrantes; i++){
             var index = Math.floor( Math.random() * this.cartas.length );
-            this.masos.sobrantes.push( this.cartas.splice( index, 1 ) )
+            this.masos.sobrantes.push(this.cartas[index]);
+            this.cartas.splice( index, 1 );
         }
-
-
+        
 
     },
     create: function () {
         // body...
-        //console.log("Columnas");
-        //console.log(this.filas);
+        console.log("Columnas");
+        console.log(this.filas);
         //console.log("\n\nMaso");
         //console.log(this.masos);
         var cartas_json = Game.cache.getJSON('cartas_json');
-        console.log(cartas_json);
 
         Game.stage.backgroundColor = '#335';
 
@@ -87,7 +87,7 @@ var Solitario = {
         ];
 
 
-        this.cartas_volteadas = [];
+        this.cartas_volteadas = [[],[],[],[],[],[],[]];
 
         this.no_carta.scale.setTo(0.5);
         this.no_carta.frame = 2;
@@ -105,17 +105,31 @@ var Solitario = {
         // Rellena las 7 filas
         for (var i = 0; i < CONTADOR.length; i++){
             for ( var j = 0; j < CONTADOR[i]; j++){
-                this.cartas_volteadas.push(Game.add.sprite(100 * i + 20, 150 + (5 * j), 'atras'))
+                this.cartas_volteadas[i].push(Game.add.sprite(100 * i + 20, 150 + (5 * j), 'atras'))
+                this.cartas_volteadas[i][j].scale.setTo(0.5);
+                this.cartas_volteadas[i][j].frame = 0;
+                // para arrastrar las cartas
             }
         }
         // Cambia el tamaño de las 7 filas
-        for (var i = 0; i < this.cartas_volteadas.length; i++){
-            this.cartas_volteadas[i].scale.setTo(0.5);
-            this.cartas_volteadas[i].frame = 0;
-            // para arrastrar las cartas
-            this.cartas_volteadas[i].inputEnabled = true;
-            this.cartas_volteadas[i].input.enableDrag(true);
-            //Game.Physics.enable(this.cartas_volteadas[i], Phaser.Physics.ARCADE);
+        //for (var i = 0; i < this.cartas_volteadas.length; i++){
+        //    for ( var j = 0; j < CONTADOR[i]; j++){
+        //        this.cartas_volteadas[i][j].inputEnabled = true;
+        //        this.cartas_volteadas[i][j].input.enableDrag(true);
+        //        //Game.Physics.enable(this.cartas_volteadas[i], Phaser.Physics.ARCADE);
+        //    }
+        //}
+        
+        for (var i = 0; i < CONTADOR.length; i++){
+            for ( var j = 0; j < CONTADOR[i]; j++){
+                if (j + 1 == CONTADOR[i]){
+                    this.cartas_volteadas[i].push( Game.add.sprite(this.cartas_volteadas[i][j].x, this.cartas_volteadas[i][j].y, 'cartas') )
+                    this.cartas_volteadas[i][j + 1].scale.setTo(0.5);
+                    console.log(this.cartas_volteadas[i][j + 1]);
+                    this.cartas_volteadas[i][j + 1].frame = cartas_json[ this.filas[i][j] ].frame;
+                    this.cartas_volteadas[i][j].kill();
+                }
+            }
         }
 
         console.log("Iniciado");
