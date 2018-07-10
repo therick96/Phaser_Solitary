@@ -15,14 +15,15 @@ var CONTADOR = [1,2,3,4,5,6,7];
 //    pica: [1,2,3,4,5,6,7,8,9,10,11,12],
 //}
 
-
 var Solitario = {
 
     preload: function () {
         // body...
 
         Game.load.spritesheet('atras', 'assets/imgs/cartas_1.png', 370 / 3, 200, 3);
-        Game.load.spritesheet('cartas', 'assets/imgs/cartas_2.png', 808 / 4, 1512, 3);
+        Game.load.spritesheet('cartas', 'assets/imgs/cartas_2.png', 202, 504);
+
+        Game.load.json('cartas_json', 'assets/js/cartas_json.json');
 
         this.cartas = CARTAS;
         
@@ -71,6 +72,9 @@ var Solitario = {
         //console.log(this.filas);
         //console.log("\n\nMaso");
         //console.log(this.masos);
+        var cartas_json = Game.cache.getJSON('cartas_json');
+        console.log(cartas_json);
+
         Game.stage.backgroundColor = '#335';
 
         this.no_carta = Game.add.sprite(20, 10, 'atras');
@@ -87,10 +91,12 @@ var Solitario = {
 
         this.no_carta.scale.setTo(0.5);
         this.no_carta.frame = 2;
-
+        
+        // Carta volteada
         this.carta_volteada.scale.setTo(0.5);
         this.carta_volteada.frame = 0;
-
+        
+        // Espacio donde van las cartas ordenadas
         for (var i = 0; i < this.espacio_carta.length; i++){
             this.espacio_carta[i].scale.setTo(0.5);
             this.espacio_carta[i].frame = 1;
@@ -102,7 +108,7 @@ var Solitario = {
                 this.cartas_volteadas.push(Game.add.sprite(100 * i + 20, 150 + (5 * j), 'atras'))
             }
         }
-
+        // Cambia el tamaño de las 7 filas
         for (var i = 0; i < this.cartas_volteadas.length; i++){
             this.cartas_volteadas[i].scale.setTo(0.5);
             this.cartas_volteadas[i].frame = 0;
