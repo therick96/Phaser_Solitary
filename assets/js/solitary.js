@@ -21,7 +21,8 @@ var Solitario = {
     preload: function () {
         // body...
 
-        Game.load.spritesheet('atras', 'assets/imgs/cartas_1.png', 124, 200, 3);
+        Game.load.spritesheet('atras', 'assets/imgs/cartas_1.png', 370 / 3, 200, 3);
+        Game.load.spritesheet('cartas', 'assets/imgs/cartas_2.png', 808 / 4, 1512, 3);
 
         this.cartas = CARTAS;
         
@@ -66,20 +67,21 @@ var Solitario = {
     },
     create: function () {
         // body...
-        console.log("Columnas");
-        console.log(this.filas);
-        console.log("\n\nMaso");
-        console.log(this.masos);
+        //console.log("Columnas");
+        //console.log(this.filas);
+        //console.log("\n\nMaso");
+        //console.log(this.masos);
         Game.stage.backgroundColor = '#335';
 
+        this.no_carta = Game.add.sprite(20, 10, 'atras');
         this.carta_volteada = Game.add.sprite(20, 10, 'atras');
-        this.no_carta = Game.add.sprite(10, 10, 'atras');
         this.espacio_carta = [
             Game.add.sprite(318, 10, 'atras'),
             Game.add.sprite(418, 10, 'atras'),
             Game.add.sprite(518, 10, 'atras'),
             Game.add.sprite(618, 10, 'atras'),
         ];
+
 
         this.cartas_volteadas = [];
 
@@ -104,14 +106,21 @@ var Solitario = {
         for (var i = 0; i < this.cartas_volteadas.length; i++){
             this.cartas_volteadas[i].scale.setTo(0.5);
             this.cartas_volteadas[i].frame = 0;
+            // para arrastrar las cartas
+            this.cartas_volteadas[i].inputEnabled = true;
+            this.cartas_volteadas[i].input.enableDrag(true);
+            //Game.Physics.enable(this.cartas_volteadas[i], Phaser.Physics.ARCADE);
         }
 
         console.log("Iniciado");
     },
     update: function () {
         // body...
+
+
     },
     render: function () {
         // body...
+        Game.debug.inputInfo(32,32);
     },
 };
