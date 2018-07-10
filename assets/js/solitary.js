@@ -24,6 +24,12 @@ var Solitario = {
         Game.load.spritesheet('atras', 'assets/imgs/cartas_1.png', 124, 200, 3);
 
         this.cartas = CARTAS;
+        
+        this.carta_volteada = null;
+        this.no_carta = null;
+        this.espacio_carta = [];
+        this.cartas_volteadas = [];
+
         this.filas = [
             [],
             [],
@@ -66,26 +72,39 @@ var Solitario = {
         console.log(this.masos);
         Game.stage.backgroundColor = '#335';
 
-        var carta_volteada = Game.add.sprite(20, 10, 'atras');
-        var no_carta = Game.add.sprite(10, 10, 'atras');
-        var espacio_carta = [
+        this.carta_volteada = Game.add.sprite(20, 10, 'atras');
+        this.no_carta = Game.add.sprite(10, 10, 'atras');
+        this.espacio_carta = [
             Game.add.sprite(318, 10, 'atras'),
             Game.add.sprite(418, 10, 'atras'),
             Game.add.sprite(518, 10, 'atras'),
             Game.add.sprite(618, 10, 'atras'),
         ];
 
-        no_carta.scale.setTo(0.5);
-        no_carta.frame = 2;
+        this.cartas_volteadas = [];
 
-        carta_volteada.scale.setTo(0.5);
-        carta_volteada.frame = 0;
+        this.no_carta.scale.setTo(0.5);
+        this.no_carta.frame = 2;
 
-        for (var i = 0; i < espacio_carta.length; i++){
-            espacio_carta[i].scale.setTo(0.5);
-            espacio_carta[i].frame = 1;
+        this.carta_volteada.scale.setTo(0.5);
+        this.carta_volteada.frame = 0;
+
+        for (var i = 0; i < this.espacio_carta.length; i++){
+            this.espacio_carta[i].scale.setTo(0.5);
+            this.espacio_carta[i].frame = 1;
         }
 
+        // Rellena las 7 filas
+        for (var i = 0; i < CONTADOR.length; i++){
+            for ( var j = 0; j < CONTADOR[i]; j++){
+                this.cartas_volteadas.push(Game.add.sprite(100 * i + 20, 150 + (5 * j), 'atras'))
+            }
+        }
+
+        for (var i = 0; i < this.cartas_volteadas.length; i++){
+            this.cartas_volteadas[i].scale.setTo(0.5);
+            this.cartas_volteadas[i].frame = 0;
+        }
 
         console.log("Iniciado");
     },
