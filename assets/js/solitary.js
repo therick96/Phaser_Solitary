@@ -6,6 +6,8 @@ var CARTAS = [
 ];
 
 var TOTAL = 78;
+var CONTADOR = [1,2,3,4,5,6,7];
+
 //var cartas = {
 //    corazon: [1,2,3,4,5,6,7,8,9,10,11,12],
 //    diamante: [1,2,3,4,5,6,7,8,9,10,11,12],
@@ -13,12 +15,11 @@ var TOTAL = 78;
 //    pica: [1,2,3,4,5,6,7,8,9,10,11,12],
 //}
 
-var CONTADOR = [1,2,3,4,5,6,7]
 
 var Solitario = {
+
     preload: function () {
         // body...
-        console.log("Iniciando");
 
         this.cartas = CARTAS;
         this.filas = [
@@ -46,7 +47,7 @@ var Solitario = {
 
         // Rellena el maso de sobrantes
         var sobrantes = this.cartas.length;
-        
+
         for (var i = 0; i < sobrantes; i++){
             var index = Math.floor( Math.random() * this.cartas.length );
             this.masos.sobrantes.push( this.cartas.splice( index, 1 ) )
