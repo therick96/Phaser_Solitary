@@ -21,6 +21,8 @@ var Solitario = {
     preload: function () {
         // body...
 
+        Game.load.spritesheet('atras', 'assets/imgs/cartas_1.png', 124, 200, 3);
+
         this.cartas = CARTAS;
         this.filas = [
             [],
@@ -62,7 +64,29 @@ var Solitario = {
         console.log(this.filas);
         console.log("\n\nMaso");
         console.log(this.masos);
-        Game.stage.backgroundColor = '#000000';
+        Game.stage.backgroundColor = '#335';
+
+        var carta_volteada = Game.add.sprite(20, 10, 'atras');
+        var no_carta = Game.add.sprite(10, 10, 'atras');
+        var espacio_carta = [
+            Game.add.sprite(318, 10, 'atras'),
+            Game.add.sprite(418, 10, 'atras'),
+            Game.add.sprite(518, 10, 'atras'),
+            Game.add.sprite(618, 10, 'atras'),
+        ];
+
+        no_carta.scale.setTo(0.5);
+        no_carta.frame = 2;
+
+        carta_volteada.scale.setTo(0.5);
+        carta_volteada.frame = 0;
+
+        for (var i = 0; i < espacio_carta.length; i++){
+            espacio_carta[i].scale.setTo(0.5);
+            espacio_carta[i].frame = 1;
+        }
+
+
         console.log("Iniciado");
     },
     update: function () {
@@ -70,5 +94,5 @@ var Solitario = {
     },
     render: function () {
         // body...
-    }
+    },
 };
