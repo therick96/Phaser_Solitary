@@ -20,8 +20,8 @@ var Solitario = {
     preload: function () {
         // body...
 
-        Game.load.spritesheet('atras', 'assets/imgs/cartas_1.png', 370 / 3, 200, 3);
-        Game.load.spritesheet('cartas', 'assets/imgs/cartas_2.png', 126, 202, 48);
+        Game.load.spritesheet('atras', 'assets/imgs/cartas_1.png', 124, 200, 3);
+        Game.load.spritesheet('cartas', 'assets/imgs/cartas_2.png', 124, 200, 48);
 
         Game.load.json('cartas_json', 'assets/js/cartas_json.json');
 
