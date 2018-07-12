@@ -28,7 +28,8 @@ var Solitario = {
         this.cartas = CARTAS;
         this.carta_pos_inicial = {x: null, y: null};
         
-        this.carta_volteada = null;
+        this.maso_sobrante = [];
+        this.maso_sobrante_usado = [];
         this.no_carta = null;
         this.espacio_carta = [];
         this.cartas_volteadas = [];
@@ -66,12 +67,11 @@ var Solitario = {
         console.log(this.filas);
         //console.log("\n\nMaso");
         //console.log(this.masos);
-        var cartas_json = Game.cache.getJSON('cartas_json');
+        this.cartas_json = Game.cache.getJSON('cartas_json');
 
         Game.stage.backgroundColor = '#335';
 
         this.no_carta = Game.add.sprite(20, 10, 'atras');
-        this.carta_volteada = Game.add.sprite(20, 10, 'atras');
         this.espacio_carta = [
             Game.add.sprite(318, 10, 'atras'),
             Game.add.sprite(418, 10, 'atras'),
@@ -81,13 +81,23 @@ var Solitario = {
 
 
         this.cartas_volteadas = [[],[],[],[],[],[],[]];
-
+        
+        // Maso Vacio
         this.no_carta.scale.setTo(0.5);
         this.no_carta.frame = 2;
+        this.no_carta.inputEnabled = true;
+        this.no_carta.events.onInputDown.add(this.pulsa_maso_vacio, this);
         
-        // Carta volteada
-        this.carta_volteada.scale.setTo(0.5);
-        this.carta_volteada.frame = 0;
+        // Maso de cartas sobrantes
+        for (var i = 0; i < this.masos.sobrantes.length; i++){
+            this.maso_sobrante.push( Game.add.sprite(20, 10 + ( i * 0.5 ), 'atras') );
+            this.maso_sobrante[i].scale.setTo(0.5);
+            this.maso_sobrante[i].frame = 0;
+            this.maso_sobrante[i].inputEnabled = true;
+            this.maso_sobrante[i].events.onInputDown.add(this.pulsa_maso_cartas, this);
+            
+        }
+
         
         // Espacio donde van las cartas ordenadas
         for (var i = 0; i < this.espacio_carta.length; i++){
@@ -111,7 +121,7 @@ var Solitario = {
                     var sig = j + 1;
                     this.cartas_volteadas[i].push( Game.add.sprite(this.cartas_volteadas[i][j].x, this.cartas_volteadas[i][j].y, 'cartas') )
                     this.cartas_volteadas[i][sig].scale.setTo(0.5);
-                    this.cartas_volteadas[i][sig].frame = cartas_json[ this.filas[i][j] ].frame;
+                    this.cartas_volteadas[i][sig].frame = this.cartas_json[ this.filas[i][j] ].frame;
                     this.cartas_volteadas[i][sig].inputEnabled = true;
                     this.cartas_volteadas[i][sig].input.enableDrag(true);
                     this.cartas_volteadas[i][sig].events.onDragStart.add(this.input_carta_on, this);
@@ -141,5 +151,45 @@ var Solitario = {
         
         carta.x = this.carta_pos_inicial.x;
         carta.y = this.carta_pos_inicial.y;
-    }
+    },
+    pulsa_maso_cartas: function (carta, pointer) {
+        // body...
+        const Ultima_carta = this.masos.sobrantes.length - 1;
+        this.masos.usadas.push(this.masos.sobrantes.pop());
+        
+        const index_carta = this.masos.usadas.length - 1;
+        this.maso_sobrante_usado.push( Game.add.sprite( 120, 10 + (( index_carta ) * 0.5), 'cartas'));
+        
+        this.maso_sobrante_usado[index_carta].scale.setTo(0.5);
+        this.maso_sobrante_usado[index_carta].frame = this.cartas_json[ this.masos.usadas[index_carta] ].frame;
+        this.maso_sobrante_usado[index_carta].inputEnabled = true;
+        this.maso_sobrante_usado[index_carta].input.enableDrag(true);
+        this.maso_sobrante_usado[index_carta].events.onDragStart.add(this.input_carta_on, this);
+        this.maso_sobrante_usado[index_carta].events.onDragStop.add(this.input_carta_off, this);
+        
+        carta.kill();
+
+        console.log("Pulsa Carta");
+    },
+    pulsa_maso_vacio: function (carta, pointer) {
+        // body...
+        this.maso_sobrante = [];
+
+        const TAMANO_USADAS = this.masos.usadas.length;
+        for (var i = 0; i < TAMANO_USADAS; i++){
+            this.masos.sobrantes.push( this.masos.usadas.pop() );
+            this.maso_sobrante_usado[i].kill();
+
+            this.maso_sobrante.push( Game.add.sprite(20, 10 + ( i * 0.5 ), 'atras') );
+            this.maso_sobrante[i].scale.setTo(0.5);
+            this.maso_sobrante[i].frame = 0;
+            this.maso_sobrante[i].inputEnabled = true;
+            this.maso_sobrante[i].events.onInputDown.add(this.pulsa_maso_cartas, this);
+        }
+        this.maso_sobrante_usado = [];
+        
+        console.log(this.masos.sobrantes);
+
+        console.log("Pulsa Vacio");
+    },
 };
