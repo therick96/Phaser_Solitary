@@ -33,15 +33,7 @@ var Solitario = {
         this.espacio_carta = [];
         this.cartas_volteadas = [];
 
-        this.filas = [
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-            [],
-        ];
+        this.filas = [[],[],[],[],[],[],[]];
 
         this.masos = {
             sobrantes: [],
@@ -112,14 +104,6 @@ var Solitario = {
                 // para arrastrar las cartas
             }
         }
-        // Cambia el tamaño de las 7 filas
-        //for (var i = 0; i < this.cartas_volteadas.length; i++){
-        //    for ( var j = 0; j < CONTADOR[i]; j++){
-        //        this.cartas_volteadas[i][j].inputEnabled = true;
-        //        this.cartas_volteadas[i][j].input.enableDrag(true);
-        //        //Game.Physics.enable(this.cartas_volteadas[i], Phaser.Physics.ARCADE);
-        //    }
-        //}
         
         for (var i = 0; i < CONTADOR.length; i++){
             for ( var j = 0; j < CONTADOR[i]; j++){
@@ -150,22 +134,12 @@ var Solitario = {
         Game.debug.inputInfo(32,32);
     },
     input_carta_on: function (carta, punto, x, y) {
-        //console.log(carta);
-        //console.log(punto);
         this.carta_pos_inicial = {x: x, y: y};
-        //carta.depth += 100;
         Game.world.bringToTop(carta);
-        console.log(x);
-        console.log(y);
     },
     input_carta_off: function (carta, punto, x, y) {
-        //console.log(carta);
-        //console.log(punto);
         
         carta.x = this.carta_pos_inicial.x;
         carta.y = this.carta_pos_inicial.y;
-        //this.carta_pos_inicial = {x: x, y: y};
-        //console.log(x);
-        //console.log(y);
     }
 };
