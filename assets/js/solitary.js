@@ -33,6 +33,7 @@ var Solitario = {
         this.no_carta = null;
         this.espacio_carta = [];
         this.cartas_volteadas = [];
+        this.carta_superior = null;
 
         this.filas = [[],[],[],[],[],[],[]];
 
@@ -111,10 +112,10 @@ var Solitario = {
                 this.cartas_volteadas[i].push(Game.add.sprite(100 * i + 20, 150 + (5 * j), 'atras'))
                 this.cartas_volteadas[i][j].scale.setTo(0.5);
                 this.cartas_volteadas[i][j].frame = 0;
-                // para arrastrar las cartas
             }
         }
         
+        // Voltea las primeras cartas de las columnas
         for (var i = 0; i < CONTADOR.length; i++){
             for ( var j = 0; j < CONTADOR[i]; j++){
                 if (j + 1 == CONTADOR[i]){
@@ -122,10 +123,13 @@ var Solitario = {
                     this.cartas_volteadas[i].push( Game.add.sprite(this.cartas_volteadas[i][j].x, this.cartas_volteadas[i][j].y, 'cartas') )
                     this.cartas_volteadas[i][sig].scale.setTo(0.5);
                     this.cartas_volteadas[i][sig].frame = this.cartas_json[ this.filas[i][j] ].frame;
+                    // para arrastrar las cartas
                     this.cartas_volteadas[i][sig].inputEnabled = true;
                     this.cartas_volteadas[i][sig].input.enableDrag(true);
                     this.cartas_volteadas[i][sig].events.onDragStart.add(this.input_carta_on, this);
                     this.cartas_volteadas[i][sig].events.onDragStop.add(this.input_carta_off, this);
+                    //this.cartas_volteadas[i][sig].prototype.name = this.filas[i][j];
+                    Game.physics.enable( this.cartas_volteadas[i][sig], Phaser.Physics.ARCADE );
                     //console.log(this.cartas_volteadas[i][j + 1]);
                     this.cartas_volteadas[i][j].kill();
                 }
@@ -147,10 +151,37 @@ var Solitario = {
         this.carta_pos_inicial = {x: x, y: y};
         Game.world.bringToTop(carta);
     },
-    input_carta_off: function (carta, punto, x, y) {
+    input_carta_off: function (carta, punto) {
         
-        carta.x = this.carta_pos_inicial.x;
-        carta.y = this.carta_pos_inicial.y;
+        let colision = false;
+        for (var i = 0; i < CONTADOR.length; i++){
+            colision =  Game.physics.arcade.overlap(
+                            carta,
+                            this.cartas_volteadas[i][ this.cartas_volteadas[i].length - 1 ], 
+                            this.colision_cartas, 
+                            null, this
+                        );
+
+            if (colision){
+                let index_carta = null;
+                for (var j = 0; j < CONTADOR.length; j++){
+                    index_carta = this.cartas_volteadas[j].indexOf(carta);
+                    if (index_carta >= 0){
+                        break;
+                    }
+                }
+                console.log(index_carta);
+                console.log(colision);
+                console.log(this.carta_superior);
+                break;
+            }
+        }
+        //if (colision == false){
+            carta.x = this.carta_pos_inicial.x;
+            carta.y = this.carta_pos_inicial.y;
+          //  console.log("No COlisiona");                
+        //}
+
     },
     pulsa_maso_cartas: function (carta, pointer) {
         // body...
@@ -188,8 +219,25 @@ var Solitario = {
         }
         this.maso_sobrante_usado = [];
         
-        console.log(this.masos.sobrantes);
 
         console.log("Pulsa Vacio");
     },
+    colision_cartas: function (carta_movible, carta_superior) {
+        // body...
+
+        this.carta_superior.carta = carta_superior;
+
+        //console.log(carta_movible);
+        //console.log(carta_superior);
+        //    //if (Sobre_carta == true){
+        //    //    console.log(Sobre_carta);
+        //    //    break;
+        //    //}else{
+        //    //    carta.x = this.carta_pos_inicial.x;
+        //    //    carta.y = this.carta_pos_inicial.y;
+        //    //}
+        //console.log("Colisiona");
+//
+        //return true;
+    }
 };
