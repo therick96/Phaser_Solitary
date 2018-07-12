@@ -288,13 +288,20 @@ var Solitario = {
                 carta_2: this.cartas_json[ this.filas[carta_padre.col][carta_padre.row -1] ],
             };
             console.log(cartas);
+            console.log(this.filas[carta_mueve.col].indexOf(this.filas[carta_mueve.col][carta_mueve.row -1]));
             console.log(cartas.carta_1.valor);
             console.log(cartas.carta_2.valor);
 
             if (cartas.carta_1.valor + 1 == cartas.carta_2.valor){
                 if (cartas.carta_1.color != cartas.carta_2.color){
                     console.log("Actualizar Carta");
-                    return (true);                
+                    this.filas[carta_padre.col].push(
+                        this.filas[carta_mueve.col][carta_mueve.row -1]
+                    );
+                    this.filas[carta_mueve.col].splice( 
+                            this.filas[carta_mueve.col].indexOf(this.filas[carta_mueve.col][carta_mueve.row -1]), 1);
+                    console.log(this.filas);
+                    return (true);
                 }
             }
         }else{
