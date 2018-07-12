@@ -201,6 +201,19 @@ var Solitario = {
                 }
             }
         }
+        for (var i = 0; i < this.maso_sobrante_usado.length; i++){
+            console.log("carta");
+            colision = Game.physics.arcade.overlap(
+                            carta,
+                            this.cartas_volteadas[i][ this.cartas_volteadas[i].length - 1 ], 
+                            this.colision_cartas, 
+                            null, this
+                        );
+            if (colision){
+                console.log(colision);
+                break;
+            }
+        }
         //if (colision == false){
         carta.x = this.carta_pos_inicial.x;
         carta.y = this.carta_pos_inicial.y;
@@ -222,6 +235,8 @@ var Solitario = {
         this.maso_sobrante_usado[index_carta].input.enableDrag(true);
         this.maso_sobrante_usado[index_carta].events.onDragStart.add(this.input_carta_on, this);
         this.maso_sobrante_usado[index_carta].events.onDragStop.add(this.input_carta_off, this);
+
+        Game.physics.enable( this.maso_sobrante_usado[index_carta], Phaser.Physics.ARCADE );
         
         carta.kill();
 
