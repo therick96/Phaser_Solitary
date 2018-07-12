@@ -26,6 +26,7 @@ var Solitario = {
         Game.load.json('cartas_json', 'assets/js/cartas_json.json');
 
         this.cartas = CARTAS;
+        this.carta_pos_inicial = {x: null, y: null};
         
         this.carta_volteada = null;
         this.no_carta = null;
@@ -123,10 +124,15 @@ var Solitario = {
         for (var i = 0; i < CONTADOR.length; i++){
             for ( var j = 0; j < CONTADOR[i]; j++){
                 if (j + 1 == CONTADOR[i]){
+                    var sig = j + 1;
                     this.cartas_volteadas[i].push( Game.add.sprite(this.cartas_volteadas[i][j].x, this.cartas_volteadas[i][j].y, 'cartas') )
-                    this.cartas_volteadas[i][j + 1].scale.setTo(0.5);
-                    console.log(this.cartas_volteadas[i][j + 1]);
-                    this.cartas_volteadas[i][j + 1].frame = cartas_json[ this.filas[i][j] ].frame;
+                    this.cartas_volteadas[i][sig].scale.setTo(0.5);
+                    this.cartas_volteadas[i][sig].frame = cartas_json[ this.filas[i][j] ].frame;
+                    this.cartas_volteadas[i][sig].inputEnabled = true;
+                    this.cartas_volteadas[i][sig].input.enableDrag(true);
+                    this.cartas_volteadas[i][sig].events.onDragStart.add(this.input_carta_on, this);
+                    this.cartas_volteadas[i][sig].events.onDragStop.add(this.input_carta_off, this);
+                    //console.log(this.cartas_volteadas[i][j + 1]);
                     this.cartas_volteadas[i][j].kill();
                 }
             }
@@ -143,4 +149,23 @@ var Solitario = {
         // body...
         Game.debug.inputInfo(32,32);
     },
+    input_carta_on: function (carta, punto, x, y) {
+        //console.log(carta);
+        //console.log(punto);
+        this.carta_pos_inicial = {x: x, y: y};
+        //carta.depth += 100;
+        Game.world.bringToTop(carta);
+        console.log(x);
+        console.log(y);
+    },
+    input_carta_off: function (carta, punto, x, y) {
+        //console.log(carta);
+        //console.log(punto);
+        
+        carta.x = this.carta_pos_inicial.x;
+        carta.y = this.carta_pos_inicial.y;
+        //this.carta_pos_inicial = {x: x, y: y};
+        //console.log(x);
+        //console.log(y);
+    }
 };
