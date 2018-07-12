@@ -2,245 +2,292 @@
     "c1": {
         "frame": 24,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 1
     },
     "c2": {
         "frame": 25,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 2
     },
     "c3": {
         "frame": 26,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 3
     },
     "c4": {
         "frame": 27,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 4
     },
     "c5": {
         "frame": 28,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 5
     },
     "c6": {
         "frame": 29,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 6
     },
     "c7": {
         "frame": 30,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 7
     },
     "c8": {
         "frame": 31,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 8
     },
     "c9": {
         "frame": 32,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 9
     },
     "c10": {
         "frame": 33,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 19
     },
     "c11": {
         "frame": 34,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 11
     },
     "c12": {
         "frame": 35,
         "color": "red",
-        "tipo": "corazon"
+        "tipo": "corazon",
+        "valor": 12
     },
 
     "d1": {
         "frame": 36,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 1
     },
     "d2": {
         "frame": 37,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 2
     },
     "d3": {
         "frame": 38,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 3
     },
     "d4": {
         "frame": 39,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 4
     },
     "d5": {
         "frame": 40,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 5
     },
     "d6": {
         "frame": 41,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 6
     },
     "d7": {
         "frame": 42,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 7
     },
     "d8": {
         "frame": 43,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 8
     },
     "d9": {
         "frame": 44,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 9
     },
     "d10": {
         "frame": 45,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 10
     },
     "d11": {
         "frame": 46,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 11
     },
     "d12": {
         "frame": 47,
         "color": "red",
-        "tipo": "diamante"
+        "tipo": "diamante",
+        "valor": 12
     },
 
     "p1": {
         "frame": 0,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 1
     },
     "p2": {
         "frame": 1,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 2
     },
     "p3": {
         "frame": 2,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 3
     },
     "p4": {
         "frame": 3,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 4
     },
     "p5": {
         "frame": 4,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 5
     },
     "p6": {
         "frame": 5,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 6
     },
     "p7": {
         "frame": 6,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 7
     },
     "p8": {
         "frame": 7,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 8
     },
     "p9": {
         "frame": 8,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 9
     },
     "p10": {
         "frame": 9,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 10
     },
     "p11": {
         "frame": 10,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 11
     },
     "p12": {
         "frame": 11,
         "color": "black",
-        "tipo": "pica"
+        "tipo": "pica",
+        "valor": 12
     },
 
     "t1": {
         "frame": 12,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 1
     },
     "t2": {
         "frame": 13,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 2
     },
     "t3": {
         "frame": 14,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 3
     },
     "t4": {
         "frame": 15,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 4
     },
     "t5": {
         "frame": 16,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 5
     },
     "t6": {
         "frame": 17,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 6
     },
     "t7": {
         "frame": 18,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 7
     },
     "t8": {
         "frame": 19,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 8
     },
     "t9": {
         "frame": 20,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 9
     },
     "t10": {
         "frame": 21,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 10
     },
     "t11": {
         "frame": 22,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 11
     },
     "t12": {
         "frame": 23,
         "color": "black",
-        "tipo": "trebol"
+        "tipo": "trebol",
+        "valor": 12
     }
-
 }

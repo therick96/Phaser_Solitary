@@ -23,7 +23,7 @@ var Solitario = {
         Game.load.spritesheet('atras', 'assets/imgs/cartas_1.png', 124, 200, 3);
         Game.load.spritesheet('cartas', 'assets/imgs/cartas_2.png', 124, 200, 48);
 
-        Game.load.json('cartas_json', 'assets/js/cartas_json.json');
+        Game.load.json('cartas_json', 'assets/js/cartasjson.json');
 
         this.cartas = CARTAS;
         this.carta_pos_inicial = {x: null, y: null};
@@ -145,7 +145,7 @@ var Solitario = {
     },
     render: function () {
         // body...
-        Game.debug.inputInfo(32,32);
+        Game.debug.inputInfo(32,350);
     },
     input_carta_on: function (carta, punto, x, y) {
         this.carta_pos_inicial = {x: x, y: y};
@@ -181,20 +181,30 @@ var Solitario = {
                 //console.log(this.carta_superior);
                 
                 if (si_carta){
-                    this.colocar_carta(index_carta, 
-                        {
-                            col: i, 
-                            row: this.cartas_volteadas[i].length - 1
-                        }, "columnas");
-                    
+                    console.log("SiCarta");
+                    let actualizar = this.colocar_carta(index_carta, 
+                                                        {
+                                                            col: i, 
+                                                            row: this.cartas_volteadas[i].length - 1
+                                                        }, "columnas");
+                    if (actualizar){
+                        console.log("Actualizando");
+                        //this.cartas_volteadas[index_carta.col][index_carta.row -1].x = this.carta_superior.carta.x;
+                        //this.cartas_volteadas[index_carta.col][index_carta.row -1].y = this.carta_superior.carta.y;
+                        this.cartas_volteadas[i][this.cartas_volteadas[i].length - 1].addChild(carta);
+                        carta.scale.setTo(1);
+                        carta.x = 0;
+                        carta.y = 30;
+                        //console.log(this.cartas_volteadas[index_carta.col][index_carta.row -1]);
+                        return;
+                    }
                 }
-                break;
             }
         }
         //if (colision == false){
-            carta.x = this.carta_pos_inicial.x;
-            carta.y = this.carta_pos_inicial.y;
-          //  console.log("No COlisiona");                
+        carta.x = this.carta_pos_inicial.x;
+        carta.y = this.carta_pos_inicial.y;
+        console.log("No COlisiona");                
         //}
 
     },
@@ -248,14 +258,16 @@ var Solitario = {
             carta_1: this.cartas_json[ this.filas[carta_mueve.col][carta_mueve.row -1] ],
             carta_2: this.cartas_json[ this.filas[carta_padre.col][carta_padre.row -1] ],
         };
-
         console.log(cartas);
+        console.log(cartas.carta_1.valor);
+        console.log(cartas.carta_2.valor);
 
-        if (cartas.carta_1.frame < cartas.carta_2.frame){
+        if (cartas.carta_1.valor + 1 == cartas.carta_2.valor){
             if (cartas.carta_1.color != cartas.carta_2.color){
                 console.log("Actualizar Carta");
-                
+                return (true);                
             }
         }
+        return (false);
     }
 };
