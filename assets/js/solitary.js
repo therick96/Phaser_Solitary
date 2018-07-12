@@ -33,7 +33,7 @@ var Solitario = {
         this.no_carta = null;
         this.espacio_carta = [];
         this.cartas_volteadas = [];
-        this.carta_superior = null;
+        this.carta_superior = {carta: null, };
 
         this.filas = [[],[],[],[],[],[],[]];
 
@@ -164,15 +164,30 @@ var Solitario = {
 
             if (colision){
                 let index_carta = null;
+                let si_carta = false;
                 for (var j = 0; j < CONTADOR.length; j++){
                     index_carta = this.cartas_volteadas[j].indexOf(carta);
                     if (index_carta >= 0){
+                        index_carta = {
+                            row: index_carta,
+                            col: j,
+                        };
+                        si_carta = true;
                         break;
                     }
                 }
-                console.log(index_carta);
-                console.log(colision);
-                console.log(this.carta_superior);
+                //console.log(index_carta);
+                //console.log(colision);
+                //console.log(this.carta_superior);
+                
+                if (si_carta){
+                    this.colocar_carta(index_carta, 
+                        {
+                            col: i, 
+                            row: this.cartas_volteadas[i].length - 1
+                        }, "columnas");
+                    
+                }
                 break;
             }
         }
@@ -224,20 +239,23 @@ var Solitario = {
     },
     colision_cartas: function (carta_movible, carta_superior) {
         // body...
-
         this.carta_superior.carta = carta_superior;
+    },
+    colocar_carta: function (carta_mueve, carta_padre, monton) {
+        // body...
+        //console.log(carta_mueve);
+        cartas = {
+            carta_1: this.cartas_json[ this.filas[carta_mueve.col][carta_mueve.row -1] ],
+            carta_2: this.cartas_json[ this.filas[carta_padre.col][carta_padre.row -1] ],
+        };
 
-        //console.log(carta_movible);
-        //console.log(carta_superior);
-        //    //if (Sobre_carta == true){
-        //    //    console.log(Sobre_carta);
-        //    //    break;
-        //    //}else{
-        //    //    carta.x = this.carta_pos_inicial.x;
-        //    //    carta.y = this.carta_pos_inicial.y;
-        //    //}
-        //console.log("Colisiona");
-//
-        //return true;
+        console.log(cartas);
+
+        if (cartas.carta_1.frame < cartas.carta_2.frame){
+            if (cartas.carta_1.color != cartas.carta_2.color){
+                console.log("Actualizar Carta");
+                
+            }
+        }
     }
 };
