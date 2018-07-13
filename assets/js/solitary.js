@@ -96,7 +96,6 @@ var Solitario = {
             this.maso_sobrante[i].frame = 0;
             this.maso_sobrante[i].inputEnabled = true;
             this.maso_sobrante[i].events.onInputDown.add(this.pulsa_maso_cartas, this);
-            
         }
 
         
@@ -131,6 +130,16 @@ var Solitario = {
                     //this.cartas_volteadas[i][sig].prototype.name = this.filas[i][j];
                     Game.physics.enable( this.cartas_volteadas[i][sig], Phaser.Physics.ARCADE );
                     //console.log(this.cartas_volteadas[i][j + 1]);
+                    
+                    this.cartas_volteadas[i][sig].DATOS = {
+                        name: this.filas[i][j],
+                        index: {i: i, j: j + 1},
+                        value: this.cartas_json[ this.filas[i][j] ].valor,
+                        color: this.cartas_json[ this.filas[i][j] ].color,
+                        tipo: this.cartas_json[ this.filas[i][j] ].tipo,
+                        lugar: "col",
+                    };
+
                     this.cartas_volteadas[i][j].kill();
                 }
             }
@@ -163,7 +172,7 @@ var Solitario = {
                             null, this
                         );
             if (colision){
-                index_colision = i;
+                colision = this.cartas_volteadas[i][ this.cartas_volteadas[i].length - 1 ];
                 break;
             }
         }
@@ -172,65 +181,45 @@ var Solitario = {
             let si_carta = false;
 
             // Busca en las cartas que hay ordenadas en las columnas
-            for (var j = 0; j < CONTADOR.length; j++){
-                index_carta = this.cartas_volteadas[j].indexOf(carta);
-                if (index_carta >= 0){
-                    index_carta = {
-                        row: index_carta,
-                        col: j,
+            if (carta.DATOS.lugar == "col"){
+
+                const CARTA = this.colocar_carta(  carta, colision, "columnas");
+                if (CARTA){
+                    this.cartas_volteadas[CARTA.DATOS.index.i][CARTA.DATOS.index.j].addChild(carta);
+                    this.cartas_volteadas[CARTA.DATOS.index.i].push(carta);
+                    carta.DATOS.index = {
+                        i: CARTA.DATOS.index.i,
+                        j: CARTA.DATOS.index.j +1,
                     };
-                    si_carta = true;
-                    break;
-                }
-            }
-            //console.log(index_carta);
-            //console.log(colision);
-            //console.log(this.carta_superior);
-                
-            if (si_carta){
-                console.log("SiCarta");
-                const ACTUALIZAR = this.colocar_carta(index_carta, 
-                                                    {
-                                                        col: index_colision, 
-                                                        row: this.cartas_volteadas[index_colision].length - 1
-                                                    }, "columnas");
-                if (ACTUALIZAR){
-                    console.log("Actualizando");
-                    //this.cartas_volteadas[index_carta.col][index_carta.row -1].x = this.carta_superior.carta.x;
-                    //this.cartas_volteadas[index_carta.col][index_carta.row -1].y = this.carta_superior.carta.y;
-                    this.cartas_volteadas[index_colision][this.cartas_volteadas[index_colision].length - 1].addChild(carta);
                     carta.scale.setTo(1);
                     carta.x = 0;
                     carta.y = 30;
-                    //console.log(this.cartas_volteadas[index_carta.col][index_carta.row -1]);
+                    console.log(this.cartas_volteadas);                
                     return;
                 }
             }else{
-                // Busca en las cartas que hay en el maso de sobrantes
-                index_carta = this.maso_sobrante_usado.indexOf(carta);
-                if (index_carta >= 0){
-                    console.log("SiCarta");
-                    const ACTUALIZAR = this.colocar_carta(  index_carta, 
-                                                        {
-                                                            col: index_colision, 
-                                                            row: this.cartas_volteadas[index_colision].length - 1
-                                                        }, "maso" );
-                    if (ACTUALIZAR){
-                        console.log("Actualizando");
-                        this.cartas_volteadas[index_colision][this.cartas_volteadas[index_colision].length - 1].addChild(carta);
-                        carta.scale.setTo(1);
-                        carta.x = 0;
-                        carta.y = 30;
-                        return;
-                    }
+                console.log("SiCarta");
+                const CARTA = this.colocar_carta(  carta, colision, "maso" );
+                if (CARTA){
+                    console.log("Actualizando");
+                    this.cartas_volteadas[CARTA.DATOS.index.i][CARTA.DATOS.index.j].addChild(carta);
+                    carta.scale.setTo(1);
+                    carta.DATOS.index = {
+                        i: CARTA.DATOS.index.i,
+                        j: CARTA.DATOS.index.j +1,
+                    };
+                    carta.x = 0;
+                    carta.y = 30;
+                    console.log(this.cartas_volteadas);                
+                    return;
                 }
-
             }
         }
         //if (colision == false){
         carta.x = this.carta_pos_inicial.x;
         carta.y = this.carta_pos_inicial.y;
         console.log("No COlisiona");                
+        console.log(this.cartas_volteadas);                
         //}
 
     },
@@ -250,6 +239,16 @@ var Solitario = {
         this.maso_sobrante_usado[index_carta].events.onDragStop.add(this.input_carta_off, this);
 
         Game.physics.enable( this.maso_sobrante_usado[index_carta], Phaser.Physics.ARCADE );
+
+        this.maso_sobrante_usado[index_carta].DATOS = {
+                        name: this.masos.usadas[index_carta],
+                        index: {i: index_carta, j: -1},
+                        value: this.cartas_json[ this.masos.usadas[index_carta] ].valor,
+                        color: this.cartas_json[ this.masos.usadas[index_carta] ].color,
+                        tipo: this.cartas_json[ this.masos.usadas[index_carta] ].tipo,
+                        lugar: "maso",
+                    };
+        //console.log(this.maso_sobrante_usado[index_carta].DATOS);
         
         carta.kill();
 
@@ -282,43 +281,45 @@ var Solitario = {
     colocar_carta: function (carta_mueve, carta_padre, monton) {
         // body...
         //console.log(carta_mueve);
-        if (monton != "maso"){
-            const cartas = {
-                carta_1: this.cartas_json[ this.filas[carta_mueve.col][carta_mueve.row -1] ],
-                carta_2: this.cartas_json[ this.filas[carta_padre.col][carta_padre.row -1] ],
-            };
-            console.log(cartas);
-            console.log(this.filas[carta_mueve.col].indexOf(this.filas[carta_mueve.col][carta_mueve.row -1]));
-            console.log(cartas.carta_1.valor);
-            console.log(cartas.carta_2.valor);
-
-            if (cartas.carta_1.valor + 1 == cartas.carta_2.valor){
-                if (cartas.carta_1.color != cartas.carta_2.color){
+        const carta = this.verificar_hijos(carta_padre);
+        const cartas = {
+            carta_1: carta_mueve.DATOS,
+            carta_2: carta.DATOS,
+        };
+        console.log(cartas);
+        console.log(carta);
+        if (cartas.carta_1.value + 1 == cartas.carta_2.value){
+            if (cartas.carta_1.color != cartas.carta_2.color){
+                if (monton != "maso"){
                     console.log("Actualizar Carta");
-                    this.filas[carta_padre.col].push(
-                        this.filas[carta_mueve.col][carta_mueve.row -1]
+                    this.filas[cartas.carta_2.index.i].push(
+                        this.filas[cartas.carta_1.index.i][cartas.carta_1.index.j]
                     );
-                    this.filas[carta_mueve.col].splice( 
-                            this.filas[carta_mueve.col].indexOf(this.filas[carta_mueve.col][carta_mueve.row -1]), 1);
+                    this.filas[cartas.carta_1.index.i].splice(cartas.carta_1.index.j, 1);
+                    this.cartas_volteadas[cartas.carta_1.index.i].splice(cartas.carta_1.index.j, 1);
                     console.log(this.filas);
-                    return (true);
-                }
-            }
-        }else{
-            const cartas = {
-                carta_1: this.cartas_json[ this.masos.usadas[carta_mueve] ],
-                carta_2: this.cartas_json[ this.filas[carta_padre.col][carta_padre.row -1] ],
-            };
-
-            console.log(cartas);
-            if (cartas.carta_1.valor + 1 == cartas.carta_2.valor){
-                if (cartas.carta_1.color != cartas.carta_2.color){
+                    return (carta);
+                }else{
+                
                     console.log("Actualizar Carta");
-                    return (true);                
+                    this.filas[cartas.carta_2.index.i].push(
+                        this.masos.usadas[cartas.carta_1.index.i]
+                    );
+                    this.masos.usadas.splice(cartas.carta_1.index.i, 1);
+                    this.maso_sobrante_usado.splice(cartas.carta_1.index.i, 1);
+                    return (carta);                
                 }
             }
         }
         
         return (false);
+    },
+    verificar_hijos: function (carta) {
+        // body...
+        if (carta.children.length <= 0){
+            return carta;
+        }else{
+            return this.verificar_hijos(carta.children[0]);
+        }
     }
 };
