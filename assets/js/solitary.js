@@ -8,13 +8,6 @@ var CARTAS = [
 var TOTAL = 78;
 var CONTADOR = [1,2,3,4,5,6,7];
 
-//var cartas = {
-//    corazon: [1,2,3,4,5,6,7,8,9,10,11,12],
-//    diamante: [1,2,3,4,5,6,7,8,9,10,11,12],
-//    trebor: [1,2,3,4,5,6,7,8,9,10,11,12],
-//    pica: [1,2,3,4,5,6,7,8,9,10,11,12],
-//}
-
 var Solitario = {
 
     preload: function () {
@@ -27,48 +20,27 @@ var Solitario = {
 
         this.cartas = CARTAS;
         this.carta_pos_inicial = {x: null, y: null};
-        
-        this.maso_sobrantes = [];
+
         this.maso_sobrante_usado = [];
         this.no_carta = null;
         this.espacio_carta = [];
-        //this.cartas_volteadas = [];
+
         this.carta_superior = {carta: null, };
         this.espacio_columnas = [];
 
         this.cartas_volteadas = [[],[],[],[],[],[],[]];
-        this.filas = [[],[],[],[],[],[],[]];
 
         this.masos = {
             sobrantes: [],
             usadas: [],
         }
         
-        /*// Rellena las 7 filas
-        for (var i = 0; i < CONTADOR.length; i++){
-            for ( var j = 0; j < CONTADOR[i]; j++){
-                var index = Math.floor( Math.random() * this.cartas.length );
-                this.filas[i].push(this.cartas[index]);
-                this.cartas.splice( index, 1 );
-            }
-        }
-
-        // Rellena el maso de sobrantes
-        var sobrantes = this.cartas.length;
-
-        for (var i = 0; i < sobrantes; i++){
-            var index = Math.floor( Math.random() * this.cartas.length );
-            this.masos.sobrantes.push(this.cartas[index]);
-            this.cartas.splice( index, 1 );
-        }*/
-        
     },
     create: function () {
         // body...
-        //console.log("Columnas");
-        //console.log(this.filas);
-        //console.log("\n\nMaso");
-        //console.log(this.masos);
+        let index = 0;
+        let Carta = false;
+
         this.cartas_json = Game.cache.getJSON('cartas_json');
 
         Game.stage.backgroundColor = '#335'; //Color de fondo
@@ -81,20 +53,20 @@ var Solitario = {
 
         // Las 4 posiciones finales de las cartas
         for (var i = 0; i < 4; i++){
-            this.espacio_carta.push(Game.add.sprite(350 + (i * 110), 10, 'cartas'));
+            this.espacio_carta.push(Game.add.sprite(355 + (i * 110), 20, 'cartas'));
             this.espacio_carta[i].Datos = {
                 tipo: "meta",
                 cartas: [],
             };
-            this.espacio_carta[i].scale.setTo(Escala.chica);
+            this.espacio_carta[i].scale.setTo(Escala.chica -0.1);
             this.espacio_carta[i].frame = 49;
         }
 
         // Las Columnas de cartas
         for (var i = 0; i < 7; i++){
             // Los espacios
-            this.espacio_columnas.push( Game.add.sprite(20 + (i * 110), 200, 'cartas') );
-            this.espacio_columnas[i].scale.setTo(Escala.chica);
+            this.espacio_columnas.push( Game.add.sprite(25 + (i * 110), 210, 'cartas') );
+            this.espacio_columnas[i].scale.setTo(Escala.chica -0.1);
             this.espacio_columnas[i].frame = 49;
             Game.physics.enable( this.espacio_columnas[i], Phaser.Physics.ARCADE );
             this.espacio_columnas[i].Datos = {
@@ -103,10 +75,10 @@ var Solitario = {
 
             for ( var j = 0; j < CONTADOR[i]; j++){
                 // Las Cartas
-                var index = Math.floor( Math.random() * this.cartas.length );
-                const Carta = this.cartas_json[ this.cartas[index] ];
+                index = Math.floor( Math.random() * this.cartas.length );
+                Carta = this.cartas_json[ this.cartas[index] ];
 
-                this.cartas_volteadas[i].push( Game.add.sprite(20 + (i * 110), 200 + (6 * j), 'cartas') );
+                this.cartas_volteadas[i].push( Game.add.sprite(20 + (i * 110), 200 + (1.5 * j), 'cartas') );
                 this.cartas_volteadas[i][j].scale.setTo(Escala.chica);
                 
                 this.cartas_volteadas[i][j].Datos = {
@@ -140,6 +112,33 @@ var Solitario = {
                 this.cartas.splice( index, 1 ); // Elimina de la lista la carta ya creada
             }
         }
+        
+        // Rellena las cartas del maso sobrante
+        const RESTANTES = this.cartas.length;
+        for (var i = 0; i < RESTANTES; i++){
+            index = Math.floor( Math.random() * this.cartas.length );
+            Carta = this.cartas_json[ this.cartas[index] ];
+
+            this.masos.sobrantes.push( Game.add.sprite(20, 10 + (i * 0.5), 'cartas') );
+
+            this.masos.sobrantes[i].scale.setTo(Escala.chica);
+            this.masos.sobrantes[i].Datos = {
+                tipo: "carta",
+                estado: "volteada",
+                nombre: this.cartas[index],
+                color: Carta.color,
+                valor: Carta.valor,
+                grupo: Carta.tipo,
+                posicion: {
+                    col: i,
+                    carta: false,
+                }
+            };
+            this.masos.sobrantes[i].frame = 48;
+            this.masos.sobrantes[i].inputEnabled = true;
+
+            this.cartas.splice( index, 1 );
+        }
 
             //this.espacio_columnas[i].inputEnabled = true;
             //Game.physics.enable( this.espacio_columnas[i], Phaser.Physics.ARCADE );
@@ -153,7 +152,6 @@ var Solitario = {
         //for (var i = 0; i < sobrantes; i++){
         //    var index = Math.floor( Math.random() * this.cartas.length );
         //    this.masos.sobrantes.push(this.cartas[index]);
-        //    this.cartas.splice( index, 1 );
         //}
 
         /*
