@@ -32,10 +32,11 @@ var Solitario = {
         this.maso_sobrante_usado = [];
         this.no_carta = null;
         this.espacio_carta = [];
-        this.cartas_volteadas = [];
+        //this.cartas_volteadas = [];
         this.carta_superior = {carta: null, };
         this.espacio_columnas = [];
 
+        this.cartas_volteadas = [[],[],[],[],[],[],[]];
         this.filas = [[],[],[],[],[],[],[]];
 
         this.masos = {
@@ -64,41 +65,81 @@ var Solitario = {
     },
     create: function () {
         // body...
-        console.log("Columnas");
-        console.log(this.filas);
+        //console.log("Columnas");
+        //console.log(this.filas);
         //console.log("\n\nMaso");
         //console.log(this.masos);
         this.cartas_json = Game.cache.getJSON('cartas_json');
 
-        Game.stage.backgroundColor = '#335';
-
+        Game.stage.backgroundColor = '#335'; //Color de fondo
+        
+        // La carta del maso vacio
         this.no_carta = Game.add.sprite(20, 10, 'cartas');
-        this.no_carta.scale.setTo(0.8);
+        this.no_carta.scale.setTo(Escala.chica);
         this.no_carta.frame = 50;
+        this.no_carta.inputEnabled = true;
 
+        // Las 4 posiciones finales de las cartas
         for (var i = 0; i < 4; i++){
             this.espacio_carta.push(Game.add.sprite(350 + (i * 110), 10, 'cartas'));
-            this.espacio_carta[i].datos = {
+            this.espacio_carta[i].Datos = {
                 tipo: "meta",
+                cartas: [],
             };
-            this.espacio_carta[i].scale.setTo(0.8);
+            this.espacio_carta[i].scale.setTo(Escala.chica);
             this.espacio_carta[i].frame = 49;
         }
 
+        // Las Columnas de cartas
         for (var i = 0; i < 7; i++){
+            // Los espacios
             this.espacio_columnas.push( Game.add.sprite(20 + (i * 110), 200, 'cartas') );
-            this.espacio_columnas[i].scale.setTo(0.8);
+            this.espacio_columnas[i].scale.setTo(Escala.chica);
             this.espacio_columnas[i].frame = 49;
-            this.espacio_columnas[i].tipo = "fila_vacia";
             Game.physics.enable( this.espacio_columnas[i], Phaser.Physics.ARCADE );
-            //for ( var j = 0; j < CONTADOR[i]; j++){
-            //    var index = Math.floor( Math.random() * this.cartas.length );
-//
-//            //    this.filas[i].push(this.cartas[index]);
-//            //    this.cartas.splice( index, 1 );
-            //}
-        }
+            this.espacio_columnas[i].Datos = {
+                tipo: "fila_vacia",
+            };
 
+            for ( var j = 0; j < CONTADOR[i]; j++){
+                // Las Cartas
+                var index = Math.floor( Math.random() * this.cartas.length );
+                const Carta = this.cartas_json[ this.cartas[index] ];
+
+                this.cartas_volteadas[i].push( Game.add.sprite(20 + (i * 110), 200 + (6 * j), 'cartas') );
+                this.cartas_volteadas[i][j].scale.setTo(Escala.chica);
+                
+                this.cartas_volteadas[i][j].Datos = {
+                    tipo: "carta",
+                    estado: null,
+                    nombre: this.cartas[index],
+                    color: Carta.color,
+                    valor: Carta.valor,
+                    grupo: Carta.tipo,
+                    posicion: {
+                        col: i,
+                        carta: j,
+                    }
+                }
+
+                if ( j == CONTADOR[i] -1){
+                    // Si es la primera carta
+                    this.cartas_volteadas[i][j].frame = Carta.frame;
+                    this.cartas_volteadas[i][j].Datos.estado = "derecha";
+                    this.cartas_volteadas[i][j].inputEnabled = true;
+                    this.cartas_volteadas[i][j].input.enableDrag(true);
+
+                    Game.physics.enable( this.cartas_volteadas[i][j], Phaser.Physics.ARCADE );
+
+                }else{
+                    // Si es de las que estan debajo de la primera
+                    this.cartas_volteadas[i][j].frame = 48;
+                    this.cartas_volteadas[i][j].Datos.estado = "volteada";
+                }
+
+                this.cartas.splice( index, 1 ); // Elimina de la lista la carta ya creada
+            }
+        }
 
             //this.espacio_columnas[i].inputEnabled = true;
             //Game.physics.enable( this.espacio_columnas[i], Phaser.Physics.ARCADE );
