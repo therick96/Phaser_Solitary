@@ -28,7 +28,7 @@ var Solitario = {
         this.cartas = CARTAS;
         this.carta_pos_inicial = {x: null, y: null};
         
-        this.maso_sobrante = [];
+        this.maso_sobrantes = [];
         this.maso_sobrante_usado = [];
         this.no_carta = null;
         this.espacio_carta = [];
@@ -73,15 +73,22 @@ var Solitario = {
 
         this.no_carta = Game.add.sprite(20, 10, 'atras');
         this.espacio_carta = [
-            Game.add.sprite(318, 10, 'atras'),
+            
             Game.add.sprite(418, 10, 'atras'),
             Game.add.sprite(518, 10, 'atras'),
             Game.add.sprite(618, 10, 'atras'),
         ];
 
+        for (var i = 0; i < 4; i++){
+            this.espacio_carta.push(Game.add.sprite(318, 10, 'atras'));
+        }
+
+        /*
+
+        this.espacio_columnas = [];
 
         this.cartas_volteadas = [[],[],[],[],[],[],[]];
-        
+
         // Maso Vacio
         this.no_carta.scale.setTo(0.5);
         this.no_carta.frame = 2;
@@ -106,6 +113,14 @@ var Solitario = {
 
         // Rellena las 7 filas
         for (var i = 0; i < CONTADOR.length; i++){
+        	this.espacio_columnas.push( Game.add.sprite(100 * i + 20, 150, 'atras') );
+            this.espacio_columnas[i].scale.setTo(0.5);
+            this.espacio_columnas[i].frame = 1;
+            this.espacio_columnas[i].tipo = "vacio";
+
+            this.espacio_columnas[i].inputEnabled = true;
+            Game.physics.enable( this.espacio_columnas[i], Phaser.Physics.ARCADE );
+
             for ( var j = 0; j < CONTADOR[i]; j++){
                 this.cartas_volteadas[i].push(Game.add.sprite(100 * i + 20, 150 + (5 * j), 'atras'))
                 this.cartas_volteadas[i][j].scale.setTo(0.5);
@@ -146,7 +161,7 @@ var Solitario = {
             }
         }
 
-        console.log("Iniciado");
+        console.log("Iniciado");*/
     },
     update: function () {
         // body...
@@ -160,7 +175,7 @@ var Solitario = {
             }
         }
     },
-    input_carta_on: function (carta, punto, x, y) {
+    /*input_carta_on: function (carta, punto, x, y) {
         this.carta_pos_inicial = {x: x, y: y};
         Game.world.bringToTop(carta);
         console.log("\n\n\ncarta");
@@ -179,6 +194,19 @@ var Solitario = {
                         );
             if (colision){
                 colision = this.cartas_volteadas[i][ this.cartas_volteadas[i].length - 1 ];
+                break;
+            }
+            colision =  Game.physics.arcade.overlap(
+                            carta,
+                            this.espacio_columnas[i], 
+                            this.colision_cartas, 
+                            null, this
+                        );
+            if (colision){
+                carta.x = this.espacio_columnas[i].x;
+                carta.y = this.espacio_columnas[i].y;
+                colision = false;
+                console.log("Pasa por aqui");
                 break;
             }
         }
@@ -299,7 +327,13 @@ var Solitario = {
     },
     colision_cartas: function (carta_movible, carta_superior) {
         // body...
-        this.carta_superior.carta = carta_superior;
+        if (carta_superior.tipo){
+			if (carta_superior.tipo == "vacio"){
+				console.log("Hola")
+			}
+        }else{
+        	this.carta_superior.carta = carta_superior;
+        }
         console.log("\n\n\nCarta Superior");
         console.log(carta_superior);
     },
@@ -399,5 +433,5 @@ var Solitario = {
         console.log(this.cartas_volteadas[col][row].DATOS);
         //console.log(this.maso_sobrante_usado[index_carta].DATOS);
         
-    }
+    }*/
 };
