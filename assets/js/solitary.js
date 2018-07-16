@@ -13,6 +13,8 @@ var Solitario = {
     preload: function () {
         // body...
 
+        console.log(Phaser.ScaleManager);
+
         //Game.load.spritesheet('atras', 'assets/imgs/cartas_1.png', 124, 200, 3);
         Game.load.spritesheet('cartas', 'assets/imgs/cartas_2.png', 124, 200, 51);
 
@@ -25,7 +27,7 @@ var Solitario = {
         this.no_carta = null;
         this.espacio_carta = [];
 
-        this.carta_superior = {carta: null, };
+        this.carta_superior = null;
         this.espacio_columnas = [];
 
         this.cartas_volteadas = [[],[],[],[],[],[],[]];
@@ -146,39 +148,9 @@ var Solitario = {
 
 
         /*
-        
-        // Voltea las primeras cartas de las columnas
-        for (var i = 0; i < CONTADOR.length; i++){
-            for ( var j = 0; j < CONTADOR[i]; j++){
-                if (j + 1 == CONTADOR[i]){
-                    var sig = j + 1;
-                    this.cartas_volteadas[i].push( Game.add.sprite(this.cartas_volteadas[i][j].x, this.cartas_volteadas[i][j].y, 'cartas') )
-                    this.cartas_volteadas[i][sig].scale.setTo(0.5);
-                    this.cartas_volteadas[i][sig].frame = this.cartas_json[ this.filas[i][j] ].frame;
-                    // para arrastrar las cartas
-                    this.cartas_volteadas[i][sig].inputEnabled = true;
-                    this.cartas_volteadas[i][sig].input.enableDrag(true);
-                    this.cartas_volteadas[i][sig].events.onDragStart.add(this.input_carta_on, this);
-                    this.cartas_volteadas[i][sig].events.onDragStop.add(this.input_carta_off, this);
-
-                    Game.physics.enable( this.cartas_volteadas[i][sig], Phaser.Physics.ARCADE );
                     //this.cartas_volteadas[i][sig].body.setSize(
                     //    this.cartas_volteadas[i][sig]._bounds.width,
                     //    this.cartas_volteadas[i][sig]._bounds.height);
-                    
-                    this.cartas_volteadas[i][sig].DATOS = {
-                        name: this.filas[i][j],
-                        index: {i: i, j: j + 1},
-                        value: this.cartas_json[ this.filas[i][j] ].valor,
-                        color: this.cartas_json[ this.filas[i][j] ].color,
-                        tipo: this.cartas_json[ this.filas[i][j] ].tipo,
-                        lugar: "col",
-                    };
-
-                    this.cartas_volteadas[i][j].kill();
-                }
-            }
-        }
 
         console.log("Iniciado");*/
     },
@@ -205,13 +177,55 @@ var Solitario = {
         this.carta_pos_inicial = {x: x, y: y};
         Game.world.bringToTop(carta);
         console.log("\n\n\nAgarra la carta");
-        console.log(carta);
+        console.log(carta.Datos);
     },
     input_carta_off: function (carta, punto) {
         carta.x = this.carta_pos_inicial.x;
         carta.y = this.carta_pos_inicial.y;
+
+        for (var i = 0; i < 7; i++){
+            Game.physics.arcade.overlap(
+                                    carta,
+                                    this.cartas_volteadas[i][ this.cartas_volteadas[i].length -1 ], 
+                                    this.colision_cartas, null, this);
+        }
         console.log("\nSuelta la carta\n\n\n");
-    }
+    },
+    colision_cartas: function (carta_movible, carta_superior) {
+        // Detecta si colisiona con otra carta de las columnas
+        if ( carta_movible.Datos.tipo == "carta" && (carta_movible.Datos.estado == "derecha" || carta_movible.Datos.estado == "media")){
+            if ( carta_superior.Datos.tipo == "carta" && carta_superior.Datos.estado == "derecha" ){
+                carta_superior = this.verificar_hijos(carta_superior);
+                console.log("\nColisiona con:");
+                console.log(carta_superior.Datos);
+                console.log("\n");
+
+                if ( (carta_superior.Datos.color != carta_movible.Datos.color) && ( carta_superior.Datos.valor == carta_movible.Datos.valor +1)){
+                    console.log("Posicionamiento Valido\n\n");
+                    carta_superior.addChild(carta_movible);
+                    carta_movible.x = 0;
+                    carta_movible.y = 30;
+                    carta_movible.scale.setTo(Escala.normal);
+                    carta_movible.body.setSize(
+                        carta_movible._bounds.width,
+                        carta_movible._bounds.height);
+                    if (carta_movible.Datos.estado == "derecha" && carta_movible.Datos.posicion != false){
+                        this.cartas_volteadas[carta_movible.Datos.posicion.col].splice( carta_movible.Datos.posicion.carta, 1);
+                        carta_movible.Datos.posicion = false;
+                    }
+                    console.log(this.cartas_volteadas);
+                }
+            }
+        }
+    },
+    verificar_hijos: function (carta) {
+        // body...
+        if (carta.children.length <= 0){
+            return carta;
+        }else{
+            return this.verificar_hijos(carta.children[0]);
+        }
+    },
     /*
         
         let colision = false;
@@ -423,17 +437,7 @@ var Solitario = {
         
         return (false);
     },
-    verificar_hijos: function (carta) {
-        // body...
-        if (carta.children.length <= 0){
-            return carta;
-        }else{
-            var hijo = this.verificar_hijos(carta.children[0]);
-            console.log("\n\nhijo");
-            console.log(hijo);
-            return hijo;
-        }
-    },
+    
     actualizar_fila: function(col, row){
         row = row -1;
         this.cartas_volteadas[col][row].kill();

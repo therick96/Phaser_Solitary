@@ -7,12 +7,21 @@ const Escala = {
 	normal: 1-0,
 };
 
-var Game = new Phaser.Game(800, 600, Phaser.CANVAS, 'game', this, false, false);
+const Conf = {
+    width: 800,
+    height: 600,
+    renderer: Phaser.CANVAS,
+    parent: 'game',
+    transparent: false,
+    antialias: false,
+    state: this,
+    //scaleMode: Phaser.ScaleManager.EXACT_FIT
+};
+
+var Game = new Phaser.Game(Conf);
 //var Game = new Phaser.Game(window.innerWidth, window.innerHeight, Phaser.CANVAS, 'game', this, false, false);
 
 //console.log(Phaser.version);
-
-console.log(Game.scale);
 
 Game.state.add("game", Solitario);
 //
