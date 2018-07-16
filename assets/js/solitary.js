@@ -50,6 +50,7 @@ var Solitario = {
         this.no_carta.scale.setTo(Escala.chica);
         this.no_carta.frame = 50;
         this.no_carta.inputEnabled = true;
+        this.no_carta.events.onInputDown.add(this.pulsa_maso_vacio, this);
 
         // Las 4 posiciones finales de las cartas
         for (var i = 0; i < 4; i++){
@@ -100,6 +101,8 @@ var Solitario = {
                     this.cartas_volteadas[i][j].Datos.estado = "derecha";
                     this.cartas_volteadas[i][j].inputEnabled = true;
                     this.cartas_volteadas[i][j].input.enableDrag(true);
+                    this.cartas_volteadas[i][j].events.onDragStart.add(this.input_carta_on, this);
+                    this.cartas_volteadas[i][j].events.onDragStop.add(this.input_carta_off, this);
 
                     Game.physics.enable( this.cartas_volteadas[i][j], Phaser.Physics.ARCADE );
 
@@ -136,68 +139,13 @@ var Solitario = {
             };
             this.masos.sobrantes[i].frame = 48;
             this.masos.sobrantes[i].inputEnabled = true;
+            this.masos.sobrantes[i].events.onInputDown.add(this.pulsa_maso_cartas, this);
 
             this.cartas.splice( index, 1 );
         }
 
-            //this.espacio_columnas[i].inputEnabled = true;
-            //Game.physics.enable( this.espacio_columnas[i], Phaser.Physics.ARCADE );
-//
-//            //for ( var j = 0; j < CONTADOR[i]; j++){
-//            //    this.cartas_volteadas[i].push(Game.add.sprite(100 * i + 20, 150 + (5 * j), 'atras'))
-//            //    this.cartas_volteadas[i][j].scale.setTo(0.5);
-//            //    this.cartas_volteadas[i][j].frame = 0;
-            //}
-
-        //for (var i = 0; i < sobrantes; i++){
-        //    var index = Math.floor( Math.random() * this.cartas.length );
-        //    this.masos.sobrantes.push(this.cartas[index]);
-        //}
 
         /*
-
-        this.espacio_columnas = [];
-
-        this.cartas_volteadas = [[],[],[],[],[],[],[]];
-
-        // Maso Vacio
-        this.no_carta.scale.setTo(0.5);
-        this.no_carta.frame = 2;
-        this.no_carta.inputEnabled = true;
-        this.no_carta.events.onInputDown.add(this.pulsa_maso_vacio, this);
-        
-        // Maso de cartas sobrantes
-        for (var i = 0; i < this.masos.sobrantes.length; i++){
-            this.maso_sobrante.push( Game.add.sprite(20, 10 + ( i * 0.5 ), 'atras') );
-            this.maso_sobrante[i].scale.setTo(0.5);
-            this.maso_sobrante[i].frame = 0;
-            this.maso_sobrante[i].inputEnabled = true;
-            this.maso_sobrante[i].events.onInputDown.add(this.pulsa_maso_cartas, this);
-        }
-
-        
-        // Espacio donde van las cartas ordenadas
-        for (var i = 0; i < this.espacio_carta.length; i++){
-            this.espacio_carta[i].scale.setTo(0.5);
-            this.espacio_carta[i].frame = 1;
-        }
-
-        // Rellena las 7 filas
-        for (var i = 0; i < CONTADOR.length; i++){
-        	this.espacio_columnas.push( Game.add.sprite(100 * i + 20, 150, 'atras') );
-            this.espacio_columnas[i].scale.setTo(0.5);
-            this.espacio_columnas[i].frame = 1;
-            this.espacio_columnas[i].tipo = "vacio";
-
-            this.espacio_columnas[i].inputEnabled = true;
-            Game.physics.enable( this.espacio_columnas[i], Phaser.Physics.ARCADE );
-
-            for ( var j = 0; j < CONTADOR[i]; j++){
-                this.cartas_volteadas[i].push(Game.add.sprite(100 * i + 20, 150 + (5 * j), 'atras'))
-                this.cartas_volteadas[i][j].scale.setTo(0.5);
-                this.cartas_volteadas[i][j].frame = 0;
-            }
-        }
         
         // Voltea las primeras cartas de las columnas
         for (var i = 0; i < CONTADOR.length; i++){
@@ -246,13 +194,25 @@ var Solitario = {
         //    }
         //}
     },
-    /*input_carta_on: function (carta, punto, x, y) {
+    pulsa_maso_cartas: function (carta, pointer) {
+        console.log("\n\nNueva Carta\n");
+    },
+    pulsa_maso_vacio: function (carta, pointer) {
+        // body...
+        console.log("No hay mas cartas");
+    },
+    input_carta_on: function (carta, punto, x, y) {
         this.carta_pos_inicial = {x: x, y: y};
         Game.world.bringToTop(carta);
-        console.log("\n\n\ncarta");
+        console.log("\n\n\nAgarra la carta");
         console.log(carta);
     },
     input_carta_off: function (carta, punto) {
+        carta.x = this.carta_pos_inicial.x;
+        carta.y = this.carta_pos_inicial.y;
+        console.log("\nSuelta la carta\n\n\n");
+    }
+    /*
         
         let colision = false;
         let index_colision = null;
