@@ -74,6 +74,7 @@ var Solitario = {
             Game.physics.enable( this.espacio_columnas[i], Phaser.Physics.ARCADE );
             this.espacio_columnas[i].Datos = {
                 tipo: "fila_vacia",
+                col: i,
             };
 
             for ( var j = 0; j < CONTADOR[i]; j++){
@@ -155,6 +156,7 @@ var Solitario = {
         // body...
         Game.debug.inputInfo(32,350);
         for (var i = 0; i < 7; i++){
+            Game.debug.body(this.espacio_columnas[i]);
             for (var j = 0; j < this.cartas_volteadas[i].length; j ++){
                 Game.debug.body(this.cartas_volteadas[i][j]);
             }
@@ -215,18 +217,29 @@ var Solitario = {
     input_carta_off: function (carta, punto) {
         carta.x = this.carta_pos_inicial.x;
         carta.y = this.carta_pos_inicial.y;
-
+        
         for (var i = 0; i < 7; i++){
-            Game.physics.arcade.overlap(
+            colision = Game.physics.arcade.overlap(
                                     carta,
                                     this.cartas_volteadas[i][ this.cartas_volteadas[i].length -1 ], 
                                     this.colision_cartas, null, this);
+            if (colision){
+                break;
+            }
+            colision = Game.physics.arcade.overlap(
+                                    carta,
+                                    this.espacio_columnas[i], 
+                                    this.colision_cartas, null, this);
+            if (colision){
+                break;
+            }
         }
         console.log("\n Suelta la carta \n\n\n");
     },
     colision_cartas: function (carta_movible, carta_superior) {
         // Detecta si colisiona con otra carta de las columnas
         if ( carta_movible.Datos.tipo == "carta" && (carta_movible.Datos.estado == "derecha" || carta_movible.Datos.estado == "media")){
+            console.log(carta_superior.Datos.tipo);
             if ( carta_superior.Datos.tipo == "carta" && carta_superior.Datos.estado == "derecha" ){
                 carta_superior = this.verificar_hijos(carta_superior);
                 //console.log("\nColisiona con:");
@@ -252,6 +265,28 @@ var Solitario = {
                         console.log(this.masos.usadas);
                     }
                     console.log(this.cartas_volteadas);
+                }
+            }else if( carta_superior.Datos.tipo == "fila_vacia" ){
+                console.log( "Length de columna: ", this.cartas_volteadas[carta_superior.Datos.col].length);
+                if (this.cartas_volteadas[carta_superior.Datos.col].length <= 0){
+                    if( carta_movible.Datos.valor == 12){
+                        this.cartas_volteadas[carta_superior.Datos.col].push( carta_movible );
+                        console.log("Posicionamiento Valido\n");
+                        carta_movible.x = carta_superior.x -5;
+                        carta_movible.y = carta_superior.y -10;
+
+                        carta_movible.Datos.posicion = {
+                            col: carta_superior.Datos.col,
+                            carta: 0,
+                        };
+                        if (carta_movible.Datos.estado == "derecha" && carta_movible.Datos.posicion != false){
+                            this.cartas_volteadas[carta_movible.Datos.posicion.col].splice( carta_movible.Datos.posicion.carta, 1);
+                            this.actualizar_fila(carta_movible.Datos.posicion);
+                        }else if( carta_movible.Datos.estado == "media" ){
+                            this.masos.usadas.splice( carta_movible.Datos.posicion.col, 1);
+                        }
+                        console.log(this.cartas_volteadas);
+                    }
                 }
             }
         }
