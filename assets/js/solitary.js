@@ -146,13 +146,6 @@ var Solitario = {
             this.cartas.splice( index, 1 );
         }
 
-
-        /*
-                    //this.cartas_volteadas[i][sig].body.setSize(
-                    //    this.cartas_volteadas[i][sig]._bounds.width,
-                    //    this.cartas_volteadas[i][sig]._bounds.height);
-
-        console.log("Iniciado");*/
     },
     update: function () {
         // body...
@@ -201,7 +194,7 @@ var Solitario = {
                 //console.log("\n");
 
                 if ( (carta_superior.Datos.color != carta_movible.Datos.color) && ( carta_superior.Datos.valor == carta_movible.Datos.valor +1)){
-                    console.log("Posicionamiento Valido\n\n");
+                    console.log("Posicionamiento Valido\n");
                     carta_superior.addChild(carta_movible);
                     carta_movible.x = 0;
                     carta_movible.y = 30;
@@ -229,9 +222,11 @@ var Solitario = {
     },
     actualizar_fila: function(pos){
         if ( this.cartas_volteadas[pos.col].length > 0 ){
+            console.log("\n\n Actualizar Carta");
             let carta = this.cartas_volteadas[pos.col][pos.carta -1].Datos;
             console.log(this.cartas_volteadas[pos.col].length);
-            this.cartas_volteadas[pos.col][pos.carta -1].frame = this.cartas_json[ carta.nombre ];
+            console.log(this.cartas_json[ carta.nombre ]);
+            this.cartas_volteadas[pos.col][pos.carta -1].frame = this.cartas_json[ carta.nombre ].frame;
             this.cartas_volteadas[pos.col][pos.carta -1].Datos.estado = "derecha";
             this.cartas_volteadas[pos.col][pos.carta -1].inputEnabled = true;
             this.cartas_volteadas[pos.col][pos.carta -1].input.enableDrag(true);
