@@ -60,9 +60,12 @@ var Solitario = {
             this.espacio_carta[i].Datos = {
                 tipo: "meta",
                 cartas: [],
+                col: i,
+                total: 0,
             };
             this.espacio_carta[i].scale.setTo(Escala.chica -0.1);
             this.espacio_carta[i].frame = 49;
+            Game.physics.enable( this.espacio_carta[i], Phaser.Physics.ARCADE);
         }
 
         // Las Columnas de cartas
@@ -233,12 +236,19 @@ var Solitario = {
             if (colision){
                 break;
             }
+
+            if (i < 4){
+                colision = Game.physics.arcade.overlap(
+                                    carta,
+                                    this.espacio_carta[i], 
+                                    this.colision_cartas, null, this);
+            }
         }
         console.log("\n Suelta la carta \n\n\n");
     },
     colision_cartas: function (carta_movible, carta_superior) {
         // Detecta si colisiona con otra carta de las columnas
-        if ( carta_movible.Datos.tipo == "carta" && (carta_movible.Datos.estado == "derecha" || carta_movible.Datos.estado == "media")){
+        if ( carta_movible.Datos.tipo == "carta" && (carta_movible.Datos.estado == "derecha" || carta_movible.Datos.estado == "media" || carta_movible.Datos.estado == "final")){
             console.log(carta_superior.Datos.tipo);
             if ( carta_superior.Datos.tipo == "carta" && carta_superior.Datos.estado == "derecha" ){
                 carta_superior = this.verificar_hijos(carta_superior);
@@ -255,18 +265,15 @@ var Solitario = {
                     carta_movible.body.setSize(
                         carta_movible._bounds.width,
                         carta_movible._bounds.height);
-                    if (carta_movible.Datos.estado == "derecha" && carta_movible.Datos.posicion != false){
-                        this.cartas_volteadas[carta_movible.Datos.posicion.col].splice( carta_movible.Datos.posicion.carta, 1);
-                        this.actualizar_fila(carta_movible.Datos.posicion);
-                        carta_movible.Datos.posicion = false;
-                    }else if( carta_movible.Datos.estado == "media" ){
-                        this.masos.usadas.splice( carta_movible.Datos.posicion.col, 1);
-                        carta_movible.Datos.posicion = false;
-                        console.log(this.masos.usadas);
-                    }
+                    this.actualizar_carta(carta_movible);
+
+                    carta_movible.Datos.estado = "derecha";
+                    carta_movible.Datos.posicion = false;
                     console.log(this.cartas_volteadas);
                 }
             }else if( carta_superior.Datos.tipo == "fila_vacia" ){
+
+                // Si se coloca una carta en un espacio vacio
                 console.log( "Length de columna: ", this.cartas_volteadas[carta_superior.Datos.col].length);
                 if (this.cartas_volteadas[carta_superior.Datos.col].length <= 0){
                     if( carta_movible.Datos.valor == 12){
@@ -275,20 +282,76 @@ var Solitario = {
                         carta_movible.x = carta_superior.x -5;
                         carta_movible.y = carta_superior.y -10;
 
+                        this.actualizar_carta(carta_movible);
+
                         carta_movible.Datos.posicion = {
                             col: carta_superior.Datos.col,
                             carta: 0,
                         };
-                        if (carta_movible.Datos.estado == "derecha" && carta_movible.Datos.posicion != false){
-                            this.cartas_volteadas[carta_movible.Datos.posicion.col].splice( carta_movible.Datos.posicion.carta, 1);
-                            this.actualizar_fila(carta_movible.Datos.posicion);
-                        }else if( carta_movible.Datos.estado == "media" ){
-                            this.masos.usadas.splice( carta_movible.Datos.posicion.col, 1);
-                        }
+                        carta_movible.Datos.estado = "derecha";
                         console.log(this.cartas_volteadas);
                     }
                 }
+            }else if( carta_superior.Datos.tipo == "meta"){
+
+                // Si se coloca una carta en una de las metas
+                if (carta_movible.children.length <= 0){
+                    console.log(carta_superior.Datos.col);
+                    if (this.espacio_carta[carta_superior.Datos.col].Datos.cartas.length <= 0 && carta_movible.Datos.valor == 1){
+                        this.espacio_carta[carta_superior.Datos.col].Datos.cartas.push( carta_movible );
+                        carta_movible.scale.setTo(Escala.chica);
+                        console.log("Posicionamiento Valido\n");
+                        carta_movible.x = carta_superior.x -5;
+                        carta_movible.y = carta_superior.y -10;
+                        carta_movible.scale.setTo(Escala.chica);
+                        //carta_movible.body.setSize(
+                        //    carta_movible._bounds.width,
+                        //    carta_movible._bounds.height);
+
+                        this.actualizar_carta(carta_movible);
+                        
+                        carta_movible.Datos.estado = "final";
+                        carta_superior.Datos.grupo = carta_movible.Datos.grupo;
+                        carta_movible.Datos.posicion = {
+                            col: carta_superior.Datos.col,
+                            carta: this.espacio_carta[carta_superior.Datos.col].Datos.cartas.length -1,
+                        };
+                    }else{
+                        console.log("Cartas: ", this.espacio_carta[carta_superior.Datos.col].Datos.cartas);
+                        console.log("Carta: ", carta_movible.Datos.valor);
+                        if ( this.espacio_carta[carta_superior.Datos.col].Datos.cartas.length == carta_movible.Datos.valor -1 ){
+                            if ( carta_movible.Datos.grupo == carta_superior.Datos.grupo ){
+                                this.espacio_carta[carta_superior.Datos.col].Datos.cartas.push( carta_movible );
+                                console.log("Posicionamiento Valido\n");
+                                carta_movible.x = carta_superior.x -5;
+                                carta_movible.y = carta_superior.y -10;
+                                carta_movible.scale.setTo(Escala.chica);
+                                //carta_movible.body.setSize(
+                                //    carta_movible._bounds.width,
+                                //    carta_movible._bounds.height);
+                                this.actualizar_carta(carta_movible);
+                                carta_movible.Datos.estado = "final";
+                                carta_movible.Datos.posicion = {
+                                    col: carta_superior.Datos.col,
+                                    carta: this.espacio_carta[carta_superior.Datos.col].Datos.cartas.length -1,
+                                };
+                            }
+                        }
+                    }
+                }
             }
+        }
+    },
+    actualizar_carta: function (carta) {
+        // body...
+        if (carta.Datos.estado == "derecha" && carta.Datos.posicion != false){
+            this.cartas_volteadas[carta.Datos.posicion.col].splice( carta.Datos.posicion.carta, 1);
+            this.actualizar_fila(carta.Datos.posicion);
+        }else if( carta.Datos.estado == "media" ){
+            this.masos.usadas.splice( carta.Datos.posicion.col, 1);
+        }else if( carta.Datos.estado == "final" ){
+            console.log(this.espacio_carta[carta.Datos.posicion.col]);
+            this.espacio_carta[carta.Datos.posicion.col].Datos.cartas.splice( carta.Datos.posicion.carta, 1);
         }
     },
     verificar_hijos: function (carta) {
