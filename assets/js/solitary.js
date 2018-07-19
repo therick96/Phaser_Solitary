@@ -29,6 +29,7 @@ var Solitario = {
 
         this.carta_superior = null;
         this.espacio_columnas = [];
+        this.gana = false;
 
         this.cartas_volteadas = [[],[],[],[],[],[],[]];
 
@@ -157,13 +158,13 @@ var Solitario = {
     },
     render: function () {
         // body...
-        Game.debug.inputInfo(32,350);
-        for (var i = 0; i < 7; i++){
-            Game.debug.body(this.espacio_columnas[i]);
-            for (var j = 0; j < this.cartas_volteadas[i].length; j ++){
-                Game.debug.body(this.cartas_volteadas[i][j]);
-            }
-        }
+        //Game.debug.inputInfo(32,350);
+        //for (var i = 0; i < 7; i++){
+        //    Game.debug.body(this.espacio_columnas[i]);
+        //    for (var j = 0; j < this.cartas_volteadas[i].length; j ++){
+        //        Game.debug.body(this.cartas_volteadas[i][j]);
+        //    }
+        //}
     },
     pulsa_maso_cartas: function (carta, pointer) {
         console.log("\n Nueva Carta \n");
@@ -215,7 +216,7 @@ var Solitario = {
         this.carta_pos_inicial = {x: x, y: y};
         Game.world.bringToTop(carta);
         console.log("\n\n\n Agarra la carta \n");
-        console.log(carta.Datos);
+        console.log(carta);
     },
     input_carta_off: function (carta, punto) {
         carta.x = this.carta_pos_inicial.x;
@@ -258,6 +259,11 @@ var Solitario = {
 
                 if ( (carta_superior.Datos.color != carta_movible.Datos.color) && ( carta_superior.Datos.valor == carta_movible.Datos.valor +1)){
                     console.log("Posicionamiento Valido\n");
+                    if (carta_movible.parent.Datos){
+                        var parent = carta_movible.parent;
+                        parent.removeChild(carta_movible);
+                        Game.add.existing(carta_movible);
+                    }
                     carta_superior.addChild(carta_movible);
                     carta_movible.x = 0;
                     carta_movible.y = 30;
@@ -295,10 +301,16 @@ var Solitario = {
             }else if( carta_superior.Datos.tipo == "meta"){
 
                 // Si se coloca una carta en una de las metas
+                
                 if (carta_movible.children.length <= 0){
                     console.log(carta_superior.Datos.col);
                     if (this.espacio_carta[carta_superior.Datos.col].Datos.cartas.length <= 0 && carta_movible.Datos.valor == 1){
                         this.espacio_carta[carta_superior.Datos.col].Datos.cartas.push( carta_movible );
+                        if (carta_movible.parent.Datos){
+                            var parent = carta_movible.parent;
+                            parent.removeChild(carta_movible);
+                            Game.add.existing(carta_movible);
+                        }
                         carta_movible.scale.setTo(Escala.chica);
                         console.log("Posicionamiento Valido\n");
                         carta_movible.x = carta_superior.x -5;
@@ -322,6 +334,11 @@ var Solitario = {
                         if ( this.espacio_carta[carta_superior.Datos.col].Datos.cartas.length == carta_movible.Datos.valor -1 ){
                             if ( carta_movible.Datos.grupo == carta_superior.Datos.grupo ){
                                 this.espacio_carta[carta_superior.Datos.col].Datos.cartas.push( carta_movible );
+                                if (carta_movible.parent.Datos){
+                                    var parent = carta_movible.parent;
+                                    parent.removeChild(carta_movible);
+                                    Game.add.existing(carta_movible);
+                                }
                                 console.log("Posicionamiento Valido\n");
                                 carta_movible.x = carta_superior.x -5;
                                 carta_movible.y = carta_superior.y -10;
@@ -335,10 +352,13 @@ var Solitario = {
                                     col: carta_superior.Datos.col,
                                     carta: this.espacio_carta[carta_superior.Datos.col].Datos.cartas.length -1,
                                 };
+                                this.verificar_ganado();
                             }
                         }
                     }
                 }
+            }else if( carta_superior.Datos.estado == "final"){
+
             }
         }
     },
@@ -378,4 +398,19 @@ var Solitario = {
         }
         
     },
+    verificar_ganado: function () {
+        // body...
+        for (var i = 0; i < 4; i++){
+            if (this.espacio_carta[i].length == 12){
+                this.gana = true;
+            }else{
+                this.gana = false;
+                break;
+            }
+        }
+        if (this.gana == true){
+            Game.physics.arcade.isPaused = true;
+            Game.state.start("You Win");
+        }
+    }
 };
